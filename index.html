@@ -13,121 +13,18 @@
     <img src="https://rxjs.dev/generated/images/marketing/home/Rx_Logo-512-512.png" class="logo"/>
     <h1>RxJS Playground</h1>
   </header>
-  
-    <h2>Examples:</h2>
-    <p>Creating Observable from event</p>
-    <br />
-    <button id='example-1'>Click to run</button>
-
     <section>
-      <h3>Basic Clock</h3>
-      <pre>
-import { map, timer } from 'rxjs';
-
-const output = document.createElement('output');
-document.body.prepend(output);
-
-timer(0, 1000)
-  .pipe(map(() => new Date().toLocaleTimeString()))
-  .subscribe(time => (output.textContent = time));
-      </pre>
-    </section>
-
-    <section>
-      <h3>Movable Element</h3>
-      <pre>
-import { fromEvent, exhaustMap, takeUntil } from 'rxjs';
-
-const target = document.createElement('div');
-target.setAttribute(
-  'style',
-  'position: absolute; top: 0; left: 0; background-color: red; width: 50px; height: 50px;'
-);
-document.body.append(target);
-
-fromEvent(target, 'mousedown')
-  .pipe(
-    exhaustMap(() =>
-      fromEvent(document, 'mousemove').pipe(
-        takeUntil(fromEvent(document, 'mouseup'))
-      )
-    )
-  )
-  .subscribe(({ pageX, pageY }: MouseEvent) => {
-    target.style.transform = `translate3d(${pageX}px, ${pageY}px, 0)`;
-  });
-      </pre>
-    </section>
-
-    <section>
-      <h3>Animated Dot Trail</h3>
-      <pre>
-import {
-  defer,
-  fromEvent,
-  animationFrames,
-  mergeMap,
-  tap,
-  takeWhile,
-  scan,
-  finalize
-} from 'rxjs';
-
-// When the mouse moves, add animated dots to the screen.
-fromEvent(document, 'mousemove')
-  .pipe(mergeMap((e: MouseEvent) => addDot(e.pageX, e.pageY)))
-  .subscribe();
-
-function addDot(x: number, y: number) {
-  return defer(() => {
-    // Create and add the dot element when
-    // the observable is subscribed to
-    const dot = document.createElement('div');
-    dot.setAttribute(
-      'style',
-      `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 10px;
-        height: 10px;
-        background-color: lime;
-        border-radius: 50%;
-        transform: translate3d(${x}px, ${y}px, 0);
-      `
-    );
-    document.body.append(dot);
-
-    const xVelocity = Math.random() * 2 - 1;
-    const yVelocity = Math.random() * 2 - 1;
-
-    return animationFrames().pipe(
-      // Only take animation frames for 1 second.
-      takeWhile(({ elapsed }) => elapsed < 1000),
-
-      // Track and update the current position.
-      scan(
-        ({ x: xCurrent, y: yCurrent }) => ({
-          x: xCurrent + xVelocity,
-          y: yCurrent + yVelocity
-        }),
-        { x, y }
-      ),
-
-      // Set the position on the dot as a side-effect.
-      tap(({ x, y }) => {
-        dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      }),
-
-      // When we clean up, remove the element.
-      finalize(() => {
-        dot.remove();
-      })
-    );
-  });
-}
-      
-      </pre>
+      <h2>Examples:</h2>
+      <p style="margin: 20px 0 20px 0">Creating Observable from event</p>
+      <button id='example-1'>Click to run</button>
+      <p style="margin: 20px 0 20px 0">Creating Tick</p>
+      <button id='example-2'>Click to run</button>
+      <p style="margin: 20px 0 20px 0">Take pizza</p>
+      <button id='example-3'>Click to take pizza slice</button>
+      <p style="margin: 20px 0 20px 0">Create a moveable square</p>
+      <button id='example-4'>Click to create</button>
+      <p style="margin: 20px 0 20px 0">Add dots</p>
+      <button id='example-5'>Click to add dots</button>
     </section>
   </article>
 </body>
